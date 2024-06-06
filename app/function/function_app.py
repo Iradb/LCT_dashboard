@@ -19,6 +19,23 @@ def function_Scatter_lat_lon():
 
 def function_sidebar():
     query = session.query(Markers.custom_name, Markers.custom_id).all()
-    data = [{'custom_name': row[0], 'custom_id': row[1]} for row in query]
-    table = dash_table.DataTable(data=data,columns=[{"id": i,"name": i,} for i in data[0].keys()],id="data-table")
+    data = [{'custom_name': row[0]} for row in query]
+    table = dash_table.DataTable(data=data,
+                                 columns=[{"id": i,"name": i,} for i in data[0].keys()],
+                                 style_header={
+                                'backgroundColor': 'rgb(30, 30, 30)',
+                                'color': '#ff992c',
+                                'textAlign': 'center',
+                                'fontSize': '15px',
+                                },
+                                style_data={
+                                    'backgroundColor': '#424242',
+                                    'color': '#ff992c',
+                                    'textAlign': 'center',
+                                    'fontSize': '15px',
+
+
+                                },
+    id="datatable",
+    )
     return table
