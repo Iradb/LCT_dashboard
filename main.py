@@ -2,7 +2,7 @@ import os
 import app.__init__
 from dash import html, Input, Output, dcc, dash_table,Dash,State
 import plotly.graph_objs as go
-from app.database.database import session
+from app.database.database import Base,engine
 from app.models.models import Markers
 from flask import send_from_directory
 from app.function.function_app import function_sidebar
@@ -25,17 +25,14 @@ app.scripts.config.serve_locally = True
 #     app,
 #     VALID_USERNAME_PASSWORD_PAIRS
 # )
-
-add_db()
+Base.metadata.create_all(engine)
+# add_db()
 @app.server.route('/assests/<path:path>')
 def static_file(path):
     static_folder = os.path.join(os.getcwd(), 'assests')
     return send_from_directory(static_folder, path)
 
 fig = function_Scatter_lat_lon()
-query = session.query(Markers.custom_name, Markers.custom_id).all()
-data = [{'custom_name': row[0]} for row in query]
-table = dash_table.DataTable(data=data,columns=[{"id": i,"name": i,} for i in data[0].keys()],id="datatable")
 
 sidebar = html.Div(
     [function_sidebar()],className='sidebar',
@@ -72,4 +69,4 @@ app.layout = html.Div([
 get_callbacks(app)
 if __name__ == '__main__':
     # app.callback()
-    app.run(debug=True)
+    app.run_server(port=os.getenv("PORT_DASH"),debug=True)
