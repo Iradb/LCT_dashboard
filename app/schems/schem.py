@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Tuple,Type, TypeVar,Optional
-from pydantic import BaseModel,Field
+from pydantic import BaseModel,Field,root_validator,model_validator
 from app.database.database import Base
-
+import pandas as pd
 
 T = TypeVar('T', bound=BaseModel)
 
@@ -28,7 +28,7 @@ class Data_TP(BaseModel):
     id_ods:Optional[int] = Field(default=None, allow_nan=True)
     id_district:Optional[int] = Field(default=None, allow_nan=True)
     id_Municipal:Optional[int] = Field(default=None, allow_nan=True)
-    geoData_full:list
+    geoData_full:Optional[list] = Field(default=None, allow_nan=True)
 
 class Data_ODS(BaseModel):
     id_ods:int

@@ -1,6 +1,7 @@
 import sqlalchemy as sqlA
 import os
 import sys
+import numpy as np
 sys.path.append(os.getcwd())
 from app.models.models import TP,ODS,Admin_districts,Municipal_areas
 from sqlalchemy.ext.declarative import declarative_base
@@ -19,7 +20,7 @@ Base = declarative_base()
 Base.metadata.create_all(engine,tables=[ODS.__table__,Admin_districts.__table__,Municipal_areas.__table__,TP.__table__])
 ctp = pd.read_csv("app/data/CTP.csv")
 ods = pd.read_csv("app/data/ODS_INFO.csv")
-adm_dist = pd.read_csv("administartion_district.csv")
+adm_dist = pd.read_csv("app/data/administartion_district.csv")
 municip = pd.read_csv("app/data/Municipal_area.csv")
 
 def function_clear_data(string):
@@ -92,7 +93,7 @@ def add_db_ODS(data):
     session.close()
 def add_db_CTP(data):
     list_mark = []
-    
+    data = data.replace({np.nan: None})
     for _, row in data.iterrows():
         try:
             marker = Data_TP(

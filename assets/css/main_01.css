@@ -2,14 +2,48 @@
     order: -1;
     position: fixed;
     top: 0;
-    padding: 1em;
+    padding: 0.3em;
     left: 0;
     bottom: 0;
     width: 15%;
-    padding: 0.5em;
-    margin-top: 1em;
+    height: 80vh;
+    margin: auto;
+    /* padding: 0.5em; */
+    margin-top: 3em;
     background-color: #424242;
+    overflow-y: scroll;
 }
+.sidebar_item{
+    display: flex;
+    width: 95%;
+    height: 50px;
+    background-color: rgb(66, 66, 66);   
+    color:  #ff992c;
+    border: 0.1em solid white;
+    font-size: 1.2em;
+    border-radius: 2px;
+    text-align: center;
+    position: relative;
+    padding: 0.2em;
+    margin: 0.3em;
+}
+.sidebar_subtitle{
+    display: flex;
+    width: 70%;
+    height: auto;
+    background-color: rgb(66, 66, 66);   
+    color:  #ff992c;
+    border: 0.1em solid white;
+    font-size: 1.1em;
+    border-radius: 2px;
+    text-align: center;
+    position: relative;
+    padding: 0.2em;
+    margin: 0.3em;
+
+}
+
+
 .content{ 
     margin-left: 15%;
     padding: 0.5em;

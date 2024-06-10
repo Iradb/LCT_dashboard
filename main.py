@@ -1,6 +1,7 @@
 import os
 import app.__init__
 from dash import html, Input, Output, dcc, dash_table,Dash,State
+from app.query.query import take_group,take_data_TCP
 import plotly.graph_objs as go
 from app.database.database import Base,engine
 from app.models.models import Markers
@@ -34,10 +35,21 @@ def static_file(path):
 
 fig = function_Scatter_lat_lon()
 
-sidebar = html.Div(
-    [function_sidebar()],className='sidebar',
-)
-
+sidebar = html.Div([
+    html.Div(
+        [html.Button([i["Муницип.Район"]], className="sidebar_item",id=f"div_{i['id']}"),
+         html.Div(
+             [
+                 html.Div(
+             z["Адрес"], 
+             className="sidebar_subtitle",id=f"sub_div_{z['id']}") 
+           for z in take_data_TCP(i["id"])
+           ],id=f'sub_area_{i["id"]}',style={"display": "none"})
+        ],
+        # className="sidebar_item"
+    )
+    for i in take_group()
+], className='sidebar')
 first_layer = html.Div(   
 )
 # Создаем содержимое
