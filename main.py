@@ -36,20 +36,21 @@ def static_file(path):
 fig = function_Scatter_lat_lon()
 
 sidebar = html.Div([
-    html.Div(
-        [html.Button([i["Муницип.Район"]], className="sidebar_item",id=f"div_{i['id']}"),
-         html.Div(
-             [
-                 html.Div(
-             z["Адрес"], 
-             className="sidebar_subtitle",id=f"sub_div_{z['id']}") 
-           for z in take_data_TCP(i["id"])
-           ],id=f'sub_area_{i["id"]}',style={"display": "none"})
-        ],
+    # html.Div(
+        # [html.Button([i["Муницип.Район"]], className="sidebar_item",id=f"div_{i['id']}"),
+        #  html.Div(
+        #      [
+        #          html.Div(
+        #      z["Адрес"], 
+        #      className="sidebar_subtitle",id=f"sub_div_{z['id']}") 
+        #    for z in take_data_TCP(i["id"])
+        #    ],id=f'sub_area_{i["id"]}',style={"display": "none"})
+        # ],
         # className="sidebar_item"
-    )
-    for i in take_group()
-], className='sidebar')
+    # )
+    # for i in take_group()
+],
+ className='sidebar',id='sidebar')
 first_layer = html.Div(   
 )
 # Создаем содержимое

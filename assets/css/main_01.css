@@ -11,15 +11,15 @@
     /* padding: 0.5em; */
     margin-top: 3em;
     background-color: #424242;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 .sidebar_item{
-    display: flex;
+    display: block;
     width: 95%;
-    height: 50px;
+    height:auto;
     background-color: rgb(66, 66, 66);   
     color:  #ff992c;
-    border: 0.1em solid white;
+    /* border: 0.1em solid white; */
     font-size: 1.2em;
     border-radius: 2px;
     text-align: center;
@@ -27,27 +27,41 @@
     padding: 0.2em;
     margin: 0.3em;
 }
-.sidebar_subtitle{
-    display: flex;
-    width: 70%;
-    height: auto;
-    background-color: rgb(66, 66, 66);   
-    color:  #ff992c;
-    border: 0.1em solid white;
-    font-size: 1.1em;
-    border-radius: 2px;
-    text-align: center;
+.sidebar_new{
+    display: block;
+    width: 95%;
+    height: 100%;
     position: relative;
-    padding: 0.2em;
-    margin: 0.3em;
+    background-color: #6868687d;   
+    color:  #ff992c;
+    /* border: 0.1em solid white; */
+    font-size: 1.2em;
+    
+}
+.title_sidebar{
+    display: block;
+    width: 100%;
+    position: relative;
+    font-size: 0.7em;
+    text-align: left;
+    color: white;
+    text-align: center;
+}
+.sidebar_subblock{
+    /* word-wrap: break-word; */
+    height: 100%;
+    /* display: flex; */
+    width: 100%;
+    /* text-align: center; */
+    position: relative;
+    font-size: 0.9em;
+    text-align: center;
 
 }
-
-
 .content{ 
     margin-left: 15%;
     padding: 0.5em;
-    background-color: #424242;
+    /* background-color: #424242; */
 }
 .UpSide{
     width: 100%;
