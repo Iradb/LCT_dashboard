@@ -64,16 +64,30 @@ def get_callbacks(app):
     @app.callback(
             Output("sidebar","children"),
             Input('sub_area', 'clickData'),
+            prevent_initial_call=True
     )
     def create_side_bar(clickData):
         if clickData:
             data = take_data_TCP(clickData['points'][0]['customdata'])
-            return html.Div([html.Div([html.P("Адрес",className="title_sidebar"),html.Div(data[0]["Адрес"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"),
-                             html.Div([html.P("ТП",className="title_sidebar"),html.Div(data[0]["Вид ТП"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"),
-                             html.Div([html.P("UNOM",className="title_sidebar"),html.Div(data[0]["UNOM"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"),
-                              html.Div([html.P("№ ОДС",className="title_sidebar"),html.Div(data[0]["ODS_name"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"),
-                               html.Div([html.P("Адрес ОДС",className="title_sidebar"),html.Div(data[0]["ODS_adrs"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"),
-                                html.Div([html.P("Номер телефона ОДС",className="title_sidebar"),html.Div(data[0]["ODS_number"],className="sidebar_subblock"),html.Hr()],className="sidebar_new")],className="sidebar_item")
+            print(data)
+            sidebar_items = []
+            if data and data[0].get("Адрес"):
+                sidebar_items.append(html.Div([html.P("Адрес",className="title_sidebar"),html.Div(data[0]["Адрес"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"))
+            if data and data[0].get("Вид ТП"):
+                sidebar_items.append(html.Div([html.P("ТП",className="title_sidebar"),html.Div(data[0]["Вид ТП"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"))
+            if data and data[0].get("UNOM"):
+                sidebar_items.append(html.Div([html.P("UNOM",className="title_sidebar"),html.Div(data[0]["UNOM"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"))
+            if data and data[0].get("ODS_name"):
+                sidebar_items.append(html.Div([html.P("№ ОДС",className="title_sidebar"),html.Div(data[0]["ODS_name"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"))
+            if data and data[0].get("ODS_adrs"):
+                sidebar_items.append(html.Div([html.P("Адрес ОДС",className="title_sidebar"),html.Div(data[0]["ODS_adrs"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"))
+            if data and data[0].get("ODS_number"):
+                sidebar_items.append(html.Div([html.P("Номер телефона ОДС",className="title_sidebar"),html.Div(data[0]["ODS_number"],className="sidebar_subblock"),html.Hr()],className="sidebar_new"))
+
+            if sidebar_items:
+                return html.Div(sidebar_items, className="sidebar_item")
+            else:
+                return html.Div("No data available")
     # query = [{"id":str(row[0]),'Адрес': row[1],'Вид ТП': row[2],'UNOM': row[3]} for row in query]
     @app.callback(
     Output('Information_about_object', 'style',allow_duplicate=True),
