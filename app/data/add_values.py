@@ -8,6 +8,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from app.schems.schem import Data_TP,Data_ODS,Data_Municipal_areas,Data_Admin_District
 from dotenv import load_dotenv
+from shapely.wkt import dumps,loads
+from shapely.geometry import Polygon
 import pandas as pd
 load_dotenv()
 table = ["Полный адрес","Адрес ТП","Источник теплоснабжения","Балансодержатель","UNOM","ЦТП","geodata_center"]
@@ -22,7 +24,8 @@ ctp = pd.read_csv("app/data/CTP.csv")
 ods = pd.read_csv("app/data/ODS_INFO.csv")
 adm_dist = pd.read_csv("app/data/administartion_district.csv")
 municip = pd.read_csv("app/data/Municipal_area.csv")
-
+Mo = pd.read_csv("mo.csv")
+print(Mo)
 def function_clear_data(string):
     try:
         start_index = string.find("[")
@@ -40,6 +43,7 @@ def function_clear_data(string):
 ctp["geodata_center"] = ctp["geodata_center"].apply(lambda x: function_clear_data(x))
 # data = ctp[table]
 def add_db_admin_municipal(data):
+    Mos = Mo[Mo["NAME_AO"]=="Восточный"]
     list_mark = []
     session = Session()
     for _, row in data.iterrows():
@@ -47,7 +51,9 @@ def add_db_admin_municipal(data):
         if not existing_row:
             try:
                 marker = Data_Municipal_areas(id_area=row["id"],
-                            name=row["Муницип.Район"]
+                            name=row["Муницип.Район"],
+                            id_district = 1,
+                            geocoords=dumps(loads(Mos["WKT"].values[_])),
                             )
                 list_mark.append(marker)    
             except Exception as e:
@@ -120,6 +126,6 @@ def add_db_CTP(data):
     session.close()
 # add_db_CTP()
 add_db_admin_municipal(municip)
-add_db_admin_district(adm_dist)
-add_db_ODS(ods)
-add_db_CTP(ctp)
+# add_db_admin_district(adm_dist)
+# add_db_ODS(ods)
+# add_db_CTP(ctp)

@@ -2,8 +2,9 @@ from app.database.database import Session
 from app.models.models import Markers,TP
 from dash import dash_table
 import plotly.graph_objs as go
+from app.query.query import Take_geoodata_Municipal
 colors_TP = {"ЦТП":"red","ИТП":"blue","СТП":"green"}
-def function_Scatter_lat_lon():
+def function_Scatter_lat_lon_marker():
     session = Session()
     all_matp = session.query(TP.id, TP.geoData_full,TP.Adres_TP_Full,TP.Kind_TP).all()
     name=[]
@@ -36,6 +37,46 @@ def function_Scatter_lat_lon():
         )
     # fig.update_traces(cluster=dict(enabled=True))
     session.close()
+    return fig
+def function_Scatter_lat_lon():
+    # all_matp = session.query(TP.id, TP.geoData_full,TP.Adres_TP_Full,TP.Kind_TP).all()
+    data = Take_geoodata_Municipal()
+    fig = go.Figure(
+        data=[
+            go.Scattermapbox(
+                lat=[coord[1] for coord in row['geocoords'].exterior.coords],
+                lon=[coord[0] for coord in row['geocoords'].exterior.coords],
+                # name=row['Муницип.Район'],
+                mode="lines",
+                fill="toself",
+                fillcolor="rgba(255, 127, 127, 0.5)",
+                line_color="red",
+            )
+            for row in data
+        ] + [
+            go.Scattermapbox(
+                lat=[sum([coord[1] for coord in row['geocoords'].exterior.coords])/len([coord[1] for coord in row['geocoords'].exterior.coords])],
+                lon=[sum([coord[0] for coord in row['geocoords'].exterior.coords])/len([coord[0] for coord in row['geocoords'].exterior.coords])],
+                # name=row['Муницип.Район'],
+                mode='markers+text',
+                fill="toself",
+                marker=dict(size=14),
+                text=row["Муницип.Район"],
+                textposition="top center",
+                textfont=dict(size=14, color='black')
+            )
+            for row in data
+        ]
+    )
+    fig.update_layout(mapbox_zoom=15,
+        mapbox_style='carto-positron',
+        mapbox_center={'lat': 55.755864, 'lon': 37.617698},
+        showlegend=False,
+        annotations=[{"bgcolor": "red","text":"ЦТП","x":0.98,"y":0.95,"showarrow":False,"font":{"color":"white"}},
+                     {"bgcolor": "blue","text":"ИТП","x":0.98,"y":0.92,"showarrow":False,"font":{"color":"white"}}],
+        )
+    # fig.update_traces(cluster=dict(enabled=True))
+    # session.close()
     return fig
 
 def function_sidebar():
@@ -81,3 +122,4 @@ def find_row_index(custom_name):
         return data[0]
 
     return None
+

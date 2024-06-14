@@ -38,6 +38,8 @@ class Data_ODS(BaseModel):
 class Data_Municipal_areas(BaseModel):
     id_area:int
     name:str
+    id_district:int
+    geocoords:Optional[str]
 class Data_Admin_District(BaseModel):
     id_district:int
     name:str

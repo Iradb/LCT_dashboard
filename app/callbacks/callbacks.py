@@ -1,7 +1,9 @@
+import dash
 from dash import callback
 from dash import html, Input, Output, dcc, dash_table,Dash,State
 from dash import html,dcc
 from app.query.query import take_group,take_data_TCP
+from app.function.function_app import function_Scatter_lat_lon,function_Scatter_lat_lon_marker
 from app.function.function_app import find_row_index
 active_cell_state = State('datatable', 'active_cell')
 block_open_state = State('Information_about_object', 'style')
@@ -9,23 +11,23 @@ previous_cell_state = State('previous_cell', 'data')
 clicked_indices = []
 # Обновляем функцию update_style
 def get_callbacks(app):
-    @app.callback(
-        [Output(f'sub_area_{i["id"]}', 'style') for i in take_group()],
-        # [Output(f'sub_area_{i["id"]}', 'n_clicks') for i in take_group()],
-        [Input(f'div_{i["id"]}', 'n_clicks') for i in take_group()],
-        prevent_initial_call=True
-        # [State(f'div_{i["id"]}', 'id') for i in take_group()]
-    )
-    def click_show(*args):
-        styles = []
-        args = list(args)
-        for i, n_clicks in enumerate(args):
-            if n_clicks is not None and n_clicks % 2 == 1:
-                styles.append({'display': 'block'})
-            else:
-                styles.append({'display': 'none'})
+#     @app.callback(
+#         [Output(f'sub_area_{i["id"]}', 'style') for i in take_group()],
+#         # [Output(f'sub_area_{i["id"]}', 'n_clicks') for i in take_group()],
+#         [Input(f'div_{i["id"]}', 'n_clicks') for i in take_group()],
+#         prevent_initial_call=True
+#         # [State(f'div_{i["id"]}', 'id') for i in take_group()]
+#     )
+#     def click_show(*args):
+#         styles = []
+#         args = list(args)
+#         for i, n_clicks in enumerate(args):
+#             if n_clicks is not None and n_clicks % 2 == 1:
+#                 styles.append({'display': 'block'})
+#             else:
+#                 styles.append({'display': 'none'})
 
-        return styles
+#         return styles
             
         # print(clicked_index)
         # if clicked_index is not None:
@@ -111,3 +113,26 @@ def get_callbacks(app):
             # ...
             return {'display': "block"}
         else: return{'display': "none"}
+
+    @app.callback(
+        Output('sub_area', 'figure',allow_duplicate=True),
+        [Input('sub_area', 'relayoutData')],
+        prevent_initial_call=True
+    )
+    def function_update(relayoutData):
+        if relayoutData is None:
+            relayoutData = {'mapbox.zoom':13}
+        if relayoutData is not None and 'mapbox.zoom' in relayoutData:
+            zoom_level = relayoutData['mapbox.zoom']
+            if zoom_level > 12:
+                print("function_Scatter_lat_lon_marker")
+                fig = function_Scatter_lat_lon_marker()
+                print(fig)
+                return fig
+            elif zoom_level < 12 and zoom_level > 8:
+                print("function_Scatter_lat_lon")
+                fig = function_Scatter_lat_lon()
+                print(fig)
+                return fig
+            else:
+                return dash.no_update

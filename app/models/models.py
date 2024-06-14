@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, Integer, String, MetaData, Table,Float,JSON,ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, MetaData, Table,Float,JSON,ForeignKey,Text
 from sqlalchemy.orm import relationship
 from app.database.database import engine
 from app.database.database import Base,Session
@@ -45,10 +45,14 @@ class Admin_districts(Base):
     __tablename__ = 'Admin_districts'
     id_district = Column(Integer, primary_key=True)
     name = Column(String(30),nullable=True)
+    geocoords = Column(JSON(),default=None,nullable=True)
 class Municipal_areas(Base):
     __tablename__ = 'Municipal_areas'
     id_area = Column(Integer, primary_key=True)
+    id_district = Column(Integer,ForeignKey("Admin_districts.id_district"),default=None,nullable=True)
     name = Column(String(30),nullable=True)
+    geocoords = Column(Text,default=None,nullable=True)
+    district = relationship("Admin_districts",backref="Municipal_areas")
 def add_db():
     session = Session()
     lat_1 = 59.936
