@@ -1,13 +1,13 @@
 import os
 import app.__init__
 from dash import html, Input, Output, dcc, dash_table,Dash,State
-from app.query.query import take_group,take_data_TCP
+from app.query.query import take_data_TCP
 import plotly.graph_objs as go
 from app.database.database import Base,engine
 from app.models.models import Markers
 from flask import send_from_directory
 from app.function.function_app import function_sidebar
-from app.function.function_app import function_Scatter_lat_lon
+from app.function.function_app import function_Scatter_lat_lon,function_Scatter_lat_lon_marker
 from app.models.models import add_db
 from app.schems.schem import to_pydantic,Object_take
 from app.callbacks.callbacks import get_callbacks
@@ -28,27 +28,14 @@ app.scripts.config.serve_locally = True
 # )
 Base.metadata.create_all(engine)
 # add_db()
-@app.server.route('/assests/<path:path>')
+@app.server.route('/assests/<path:path>') # Подключаем стили css
 def static_file(path):
     static_folder = os.path.join(os.getcwd(), 'assests')
     return send_from_directory(static_folder, path)
 
-fig = function_Scatter_lat_lon()
+fig = function_Scatter_lat_lon() # Получаем карту и отображенные на ней объекты с районами
 
 sidebar = html.Div([
-    # html.Div(
-        # [html.Button([i["Муницип.Район"]], className="sidebar_item",id=f"div_{i['id']}"),
-        #  html.Div(
-        #      [
-        #          html.Div(
-        #      z["Адрес"], 
-        #      className="sidebar_subtitle",id=f"sub_div_{z['id']}") 
-        #    for z in take_data_TCP(i["id"])
-        #    ],id=f'sub_area_{i["id"]}',style={"display": "none"})
-        # ],
-        # className="sidebar_item"
-    # )
-    # for i in take_group()
 ],
  className='sidebar',id='sidebar')
 first_layer = html.Div(   
@@ -58,7 +45,7 @@ content = html.Div(
     [
         html.Div([html.Div(html.A(href="/", children="Карта"),className="Cart"),
                   html.Div(html.A(href="/", children="Дашборд"),className="Cart"),
-                  html.Div(html.A(href="/", children="Что-то"),className="Cart")],className="UpSide",id="UpSide"),
+                  html.Div(html.A(href="/", children="Аналитика"),className="Cart")],className="UpSide",id="UpSide"),
         dcc.Graph(figure= fig, id='sub_area',className="sub_area", style={"width": "100%", "height": "90vh"}),
         html.Div([html.Button(["X"],className="exit",id="exit")],style={'display':'none'},className="Information_about_object",id="Information_about_object")
     ],
@@ -82,4 +69,4 @@ app.layout = html.Div([
 get_callbacks(app)
 if __name__ == '__main__':
     # app.callback()
-    app.run_server(port=os.getenv("PORT_DASH"),debug=True)
+    app.run_server(port=os.getenv("PORT_DASH"),debug=False)

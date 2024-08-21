@@ -7,7 +7,9 @@ import pandas as pd
 T = TypeVar('T', bound=BaseModel)
 
 
-
+"""
+Типизированные схемы для работы с БД и запросов к ним
+"""
 # Utility function to convert SQLAlchemy objects to Pydantic models.
 def to_pydantic(db_object: Base, pydantic_model: Type[T]) -> T:
     return pydantic_model(**db_object.__dict__)

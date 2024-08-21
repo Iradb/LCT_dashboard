@@ -24,9 +24,14 @@ ctp = pd.read_csv("app/data/CTP.csv")
 ods = pd.read_csv("app/data/ODS_INFO.csv")
 adm_dist = pd.read_csv("app/data/administartion_district.csv")
 municip = pd.read_csv("app/data/Municipal_area.csv")
-Mo = pd.read_csv("mo.csv")
+Mo = pd.read_csv("app/data/mo.csv")
+
+"""
+Общий файл для первоначальной настройки базы данных при самом первом запуске проекта
+"""
 print(Mo)
-def function_clear_data(string):
+def function_clear_data(string:str):
+    """Функция для приведение данных в удобоваримое состояние"""
     try:
         start_index = string.find("[")
         end_index = string.rfind("]")
@@ -35,14 +40,16 @@ def function_clear_data(string):
             substring = substring.split(",")
             integer_list = list(map(float, substring))
         else:
-            print("Brackets not found")
+            pass
     except:
         pass
         return None
     return integer_list
 ctp["geodata_center"] = ctp["geodata_center"].apply(lambda x: function_clear_data(x))
-# data = ctp[table]
-def add_db_admin_municipal(data):
+def add_db_admin_municipal(data:pd.DataFrame):
+    """
+    Добавление данных в таблицу Municipal_areas
+    """
     Mos = Mo[Mo["NAME_AO"]=="Восточный"]
     list_mark = []
     session = Session()
@@ -50,10 +57,12 @@ def add_db_admin_municipal(data):
         existing_row = session.query(Municipal_areas).filter_by(id_area=row['id']).first()
         if not existing_row:
             try:
+                mask = Mos["NAME"].str.contains(row["Муницип.Район"].replace("район ",""))
+                values = Mos.loc[mask,"WKT"].tolist()[0]
                 marker = Data_Municipal_areas(id_area=row["id"],
                             name=row["Муницип.Район"],
                             id_district = 1,
-                            geocoords=dumps(loads(Mos["WKT"].values[_])),
+                            geocoords=dumps(loads(values)),
                             )
                 list_mark.append(marker)    
             except Exception as e:
@@ -62,7 +71,10 @@ def add_db_admin_municipal(data):
     session.bulk_insert_mappings(Municipal_areas, list_mark)
     session.commit()
     session.close()
-def add_db_admin_district(data):
+def add_db_admin_district(data:pd.DataFrame):
+    """
+    Добавление данных в таблицу Admin_districts
+    """
     list_mark = []
     session = Session()
     for _, row in data.iterrows():
@@ -79,7 +91,10 @@ def add_db_admin_district(data):
     session.bulk_insert_mappings(Admin_districts, list_mark)
     session.commit()
     session.close()
-def add_db_ODS(data):
+def add_db_ODS(data:pd.DataFrame):
+    """
+    Добавление данных в таблицу ODS
+    """
     list_mark = []
     session = Session()
     for _, row in data.iterrows():
@@ -97,7 +112,10 @@ def add_db_ODS(data):
     session.bulk_insert_mappings(ODS, list_mark)
     session.commit()
     session.close()
-def add_db_CTP(data):
+def add_db_CTP(data:pd.DataFrame):
+    """
+    Добавление данных в таблицу Data_TP
+    """
     list_mark = []
     data = data.replace({np.nan: None})
     for _, row in data.iterrows():
@@ -125,7 +143,7 @@ def add_db_CTP(data):
     session.commit()
     session.close()
 # add_db_CTP()
+add_db_admin_district(adm_dist)
 add_db_admin_municipal(municip)
-# add_db_admin_district(adm_dist)
-# add_db_ODS(ods)
-# add_db_CTP(ctp)
+add_db_ODS(ods)
+add_db_CTP(ctp)
